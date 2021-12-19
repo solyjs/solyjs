@@ -10,7 +10,6 @@ export class AbstractContract<Contract extends any> {
   private abi: any[];
   private contractAddress: string;
   public contract = {
-    create: this.create,
     getById: this.getById,
     getAll: this.getAll,
     deleteById: this.deleteById,
@@ -24,7 +23,7 @@ export class AbstractContract<Contract extends any> {
   private async readConfig() {
     return this.fileManager.readDeploy(this.contractName);
   }
-  private mapData(colums: any[], data: any) {
+  private mapData(colums: any[], data: any, type?: string) {
     let result: any[] = [];
     colums.forEach((column) => {
       result.push(data[column.name]);
@@ -51,91 +50,94 @@ export class AbstractContract<Contract extends any> {
     this.contractAddress = contract.address;
   }
 
-  private async create(data: any) {
+  async create(data: any) {
     const id = uuidv4();
+
     // TODO read from ABI
     const columns = getStore()
       .parseContractsAndColumns()
       .find((contract) => contract.targetName === this.contractName).columns;
-    const set = this.definedContract.methods.set(id, [
+
+    const account = provider.account.address;
+    const transaction = this.definedContract.methods.set(id, [
       id,
-      ...this.mapData(columns, data),
+      ...this.mapData(columns, data, 'set'),
     ]);
-    const gas = await set.estimateGas();
-    const nonce = await provider.web3.eth.getTransactionCount(
-      provider.account.address
+    const options = {
+      to: transaction._parent._address,
+      data: transaction.encodeABI(),
+      gas: await transaction.estimateGas({ from: account }),
+      gasPrice: await provider.web3.eth.getGasPrice(),
+    };
+    const signed = await provider.web3.eth.accounts.signTransaction(
+      options,
+      provider.account.privateKey
     );
-    const createTransaction = await provider.account.signTransaction({
-      data: set.encodeABI(),
-      gas: gas,
-      gasLimit: 30000000,
-      value: 0,
-      to: this.contractAddress,
-      from: provider.account.address,
-    });
-    const createReceipt = await provider.web3.eth.sendSignedTransaction(
-      createTransaction.rawTransaction ?? ''
+    const receipt = await provider.web3.eth.sendSignedTransaction(
+      signed?.rawTransaction ?? ''
     );
-    return { tx: createReceipt.transactionHash };
+
+    return receipt;
   }
 
-  private async getAll() {
+  async getAll() {
     const items = await this.definedContract.methods.getAll().call();
     return items;
   }
 
-  private async count() {
+  async count() {
     const size = await this.definedContract.methods.size().call();
     return size;
   }
 
-  private async getById(_id: string) {
+  async getById(_id: string) {
     return this.definedContract.methods.get(_id).call();
   }
 
-  private async deleteById(_id: string) {
-    const remove = this.definedContract.methods.remove(_id);
-
-    const gas = await remove.estimateGas();
-
-    const createTransaction = await provider.account.signTransaction({
-      data: remove.encodeABI(),
-      gas: gas,
-      gasLimit: 3000000,
-
-      value: 0,
-      to: this.contractAddress,
-      from: provider.account.address,
-    });
-    const createReceipt = await provider.web3.eth.sendSignedTransaction(
-      createTransaction.rawTransaction ?? ''
+  async deleteById(_id: string) {
+    const account = provider.account.address;
+    const transaction = this.definedContract.methods.remove(_id);
+    const options = {
+      to: transaction._parent._address,
+      data: transaction.encodeABI(),
+      gas: await transaction.estimateGas({ from: account }),
+      gasPrice: await provider.web3.eth.getGasPrice(),
+    };
+    const signed = await provider.web3.eth.accounts.signTransaction(
+      options,
+      provider.account.privateKey
     );
-    return { tx: createReceipt.transactionHash };
+    const receipt = await provider.web3.eth.sendSignedTransaction(
+      signed?.rawTransaction ?? ''
+    );
+
+    return receipt;
   }
 
-  private async updateById(_id: string, data: any) {
+  async updateById(_id: string, data: any) {
     // TODO read from ABI
     const columns = getStore()
       .parseContractsAndColumns()
       .find((contract) => contract.targetName === this.contractName).columns;
-    const set = this.definedContract.methods.set(_id, [
+    const account = provider.account.address;
+    const transaction = this.definedContract.methods.set(_id, [
       _id,
       ...this.mapData(columns, data),
     ]);
-    const gas = await set.estimateGas();
-
-    const createTransaction = await provider.account.signTransaction({
-      data: set.encodeABI(),
-      gas: gas,
-      // todo provide from options
-      gasLimit: 3000000,
-      value: 0,
-      to: this.contractAddress,
-      from: provider.account.address,
-    });
-    const createReceipt = await provider.web3.eth.sendSignedTransaction(
-      createTransaction.rawTransaction ?? ''
+    const options = {
+      to: transaction._parent._address,
+      data: transaction.encodeABI(),
+      gas: await transaction.estimateGas({ from: account }),
+      gasPrice: await provider.web3.eth.getGasPrice(),
+    };
+    const signed = await provider.web3.eth.accounts.signTransaction(
+      options,
+      provider.account.privateKey
     );
-    return { tx: createReceipt.transactionHash };
+    const receipt = await provider.web3.eth.sendSignedTransaction(
+      signed?.rawTransaction ?? ''
+    );
+
+    return receipt;
   }
 }

@@ -32,9 +32,6 @@ export class User {
 
   @Column()
   firstName: string;
-
-  @Column({ type: 'int' })
-  age: number;
 }
 ```
 
@@ -109,6 +106,48 @@ await userContract.create({firstName: 'John', lastName: 'Doe'});
 Allowed methods:
 `create(data)`, `getAll()`, `get(_id)`, `count()`, `updateById(_id, data)`, `deleteById(_id)`
 
+## Restrictions
+
+| Restriction |                                              Description                                              |
+| :---------: | :---------------------------------------------------------------------------------------------------: |
+| **public**  |                             Everyone can create/update/delete **default**                             |
+|  **owner**  |         Only contract owner (the address that deployed the contract) can create/update/delete         |
+| **editors** | List of provided editors on deploy can create/update/delete (_manipulation with editors coming soon_) |
+
+##### How to use?
+
+Restriction type `owner`
+
+```typescript
+@Contract({ restriction: 'owner' })
+export class User {
+  @Column()
+  firstName: string;
+
+  @Column()
+  firstName: string;
+}
+```
+
+Restriction type `editors`
+
+```typescript
+@Contract({
+  restriction: 'editors',
+  editors: [
+    '0x25a39f7E0b8b2D6b2Ebe1f155B09EE6FfB7D11F9',
+    '0xbAce2110fA28910B48a5ed08F7ad844d8f1Af6c2',
+  ],
+})
+export class User {
+  @Column()
+  firstName: string;
+
+  @Column()
+  firstName: string;
+}
+```
+
 ## IMPORTANT
 
-This package is in development phase, so a lot of new features coming soon
+This package in development phase, so a lot of new features coming soon

@@ -15,7 +15,6 @@ export class Store {
 
       result.push({ ...contract, columns, targetName });
     }
-
     return result;
   }
 }

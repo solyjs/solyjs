@@ -7,9 +7,10 @@ export function Column(options?: any) {
       target,
       name
     );
+
     getStore().columns.push({
       name,
-      type: options.type ?? reflectMetadataType.name,
+      type: options?.type ?? reflectMetadataType.name,
       target,
       targetName: target.constructor.name,
     });

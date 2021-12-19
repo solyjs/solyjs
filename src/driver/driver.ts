@@ -12,7 +12,8 @@ export class Driver {
         contract.columns.map((column: any) => ({
           ...column,
           type: column.type,
-        }))
+        })),
+        contract.options
       );
       const rawContract = contractHelper.generateRawContract();
 

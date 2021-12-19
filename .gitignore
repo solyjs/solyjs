@@ -1,4 +1,5 @@
-solconfig.js
+soly.config.js
 node_modules/
 workdir/
 build/
+src/test

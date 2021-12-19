@@ -10,9 +10,9 @@ export class SolyModule {
     const contracts = await glob.sync(
       process.cwd() + configStore.config.cli.contracts
     );
-    for (const contract of contracts) {
-      require(contract);
-    }
+    // for (const contract of contracts) {
+    //   require(contract);
+    // }
     await provider.loadContracts();
   }
 
@@ -20,7 +20,7 @@ export class SolyModule {
     const test = new AbstractContract(
       typeof contract === 'string' ? contract : contract.name
     );
-    return test.contract;
+    return test;
   }
 
   static registerContract(contractName: string, contract: any) {

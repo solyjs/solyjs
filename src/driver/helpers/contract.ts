@@ -1,21 +1,27 @@
+import { ContractOptions } from '../../decorators/contract';
+
 // TODO method params if string
 export class ContractHelper {
   private hasMapName: string;
   private primaryColumn: any;
   private structName: string;
+  private restriction = '';
   constructor(
     private readonly contractName: string,
-    private readonly columns: any[]
+    private readonly columns: any[],
+    private readonly options?: ContractOptions
   ) {
     this.hasMapName = `${this.contractName.toLowerCase()}s`;
     this.structName = ` _${this.contractName}`;
   }
 
   generateRawContract() {
-    let contract = `pragma solidity >=0.8.6;\ncontract ${this.contractName} {\n`;
+    let contract = `pragma solidity = 0.8.10;\ncontract ${this.contractName} {\n`;
 
     contract += this.generateStruct();
     contract += this.generateMap();
+
+    contract += this.generateRestrictions();
 
     contract += `struct Map {\n string[] keys;\nmapping(string => ${this.structName}) values;\nmapping(string => uint256) indexOf;\nmapping(string => bool) inserted;\n}\nMap map;\n`;
     contract += `
@@ -33,7 +39,42 @@ export class ContractHelper {
     contract += `}`;
     return contract;
   }
+  generateRestrictions() {
+    if (this.options?.restriction === 'owner') {
+      this.restriction = '_ownerOnly';
+      return `
+      address owner;
+      modifier _ownerOnly() {
+        require(msg.sender == owner);
+        _;
+      }
+  
+      constructor(address _owner) payable {
+          owner = _owner;
+      }`;
+    }
 
+    if (this.options?.restriction === 'editors') {
+      let editors = '';
+      this.options.editors?.forEach((editor) => (editors += `${editor}, `));
+      editors = editors.substring(0, editors.length - 2);
+      this.restriction = '_editorsOnly';
+      return `
+      address[] editors = [${editors}];
+      modifier _editorsOnly() {
+      bool exist = false;
+      for (uint i; i< editors.length;i++){
+            if (editors[i] == msg.sender)
+            exist =  true;
+        }
+        require(exist == true);
+        _;
+      }
+      `;
+    }
+
+    return '';
+  }
   generateStruct() {
     let struct = `\n struct ${this.structName} {\n string _id; \n`;
     this.columns.forEach((column) => {
@@ -54,7 +95,7 @@ export class ContractHelper {
   }
 
   generateSaveMethod() {
-    return `\n  function set(string memory key, ${this.structName} memory val) public {
+    return `\n  function set(string memory key, ${this.structName} memory val) ${this.restriction} public {
       if (map.inserted[key]) {
           map.values[key] = val;
       } else {
@@ -73,7 +114,7 @@ export class ContractHelper {
   }
 
   generateDeleteById() {
-    return `\n function remove(string memory key) public {
+    return `\n function remove(string memory key) ${this.restriction} public {
       if (!map.inserted[key]) {
           return;
       }

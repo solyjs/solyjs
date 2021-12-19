@@ -22,11 +22,14 @@ export const deploy = async () => {
 
     let contractA = contract.deploy({
       data: bytecode,
-      arguments: [],
+      arguments: [account.address],
     });
     const createTransaction = await account.signTransaction({
       data: contractA.encodeABI(),
       gas: await contractA.estimateGas(),
+      gasPrice: await web3.eth.getGasPrice(),
+      value: 0,
+      from: account.address,
     });
     const createReceipt = await web3.eth.sendSignedTransaction(
       createTransaction.rawTransaction ?? ''
