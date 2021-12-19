@@ -3,7 +3,7 @@ import configStore from '../config/config';
 import { FileManager } from '../helpers/FileManager';
 
 export const deploy = async () => {
-  let selectedHost = 'https://data-seed-prebsc-1-s1.binance.org:8545';
+  let selectedHost = configStore.config.provider;
 
   const web3 = new Web3(new Web3.providers.HttpProvider(selectedHost));
   const fileManager = new FileManager();

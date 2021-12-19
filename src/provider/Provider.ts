@@ -25,7 +25,6 @@ class Provider {
     this.loadAccount();
     const contracts = await this.fileManager.readDeploys();
     for (const contract of contracts) {
-      console.log(contract.content.address);
       getStore().deployedContracts.push({
         name: contract.name,
         abi: contract.content.abi,

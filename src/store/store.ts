@@ -1,17 +1,18 @@
 export class Store {
   readonly contracts: any[] = [];
   readonly columns: any[] = [];
-  readonly injectedContracts: any[] = [];
+  readonly crudContracts: any[] = [];
   readonly deployedContracts: any[] = [];
 
   parseContractsAndColumns() {
     let result: any[] = [];
     for (const contract of this.contracts) {
-      const targetName = contract.target.name;
+      const targetName = contract.name;
 
       const columns = this.columns.filter(
-        (column) => column.target.constructor.name === targetName
+        (column) => column.targetName === targetName
       );
+
       result.push({ ...contract, columns, targetName });
     }
 

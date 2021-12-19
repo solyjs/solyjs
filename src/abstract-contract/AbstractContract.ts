@@ -1,4 +1,3 @@
-import Web3 from 'web3';
 import { FileManager } from '../helpers/FileManager';
 import provider from '../provider/Provider';
 import { getStore } from '../store/store';
@@ -6,12 +5,19 @@ import { v4 as uuidv4 } from 'uuid';
 
 export class AbstractContract<Contract extends any> {
   private contractName: string;
-  private contract: any;
+  private definedContract: any;
   private fileManager: FileManager;
   private abi: any[];
   private contractAddress: string;
-  constructor() {
-    this.getContract();
+  public contract = {
+    create: this.create,
+    getById: this.getById,
+    getAll: this.getAll,
+    deleteById: this.deleteById,
+    updateById: this.updateById,
+  };
+  constructor(contractName?: string) {
+    this.getContract(contractName);
     this.fileManager = new FileManager();
     this.readConfig();
   }
@@ -26,38 +32,43 @@ export class AbstractContract<Contract extends any> {
 
     return result;
   }
-  private getContract() {
-    const injectedContract = getStore().injectedContracts.find(
-      (contract) => (contract.target = this.constructor)
-    );
-    this.contractName = injectedContract.contract.name;
+  private getContract(contractName?: string) {
+    if (!contractName) {
+      const injectedContract = getStore().crudContracts.find(
+        (contract) => (contract.target = this.constructor)
+      );
+      this.contractName = injectedContract.contract.name;
+    } else {
+      this.contractName = contractName;
+    }
 
     const contract = getStore().deployedContracts.find(
-      (contract) => contract.name === injectedContract.contract.name
+      (contract) => contract.name === this.contractName
     );
-    this.contract = contract.contract;
+    this.definedContract = contract.contract;
 
     this.abi = contract.abi;
     this.contractAddress = contract.address;
   }
 
-  async create(data: any) {
+  private async create(data: any) {
     const id = uuidv4();
-    // TODO save to configuration
+    // TODO read from ABI
     const columns = getStore()
       .parseContractsAndColumns()
       .find((contract) => contract.targetName === this.contractName).columns;
-    const set = this.contract.methods.set(id, [
+    const set = this.definedContract.methods.set(id, [
       id,
       ...this.mapData(columns, data),
     ]);
-    console.log(columns, [id, ...this.mapData(columns, data)]);
     const gas = await set.estimateGas();
-
+    const nonce = await provider.web3.eth.getTransactionCount(
+      provider.account.address
+    );
     const createTransaction = await provider.account.signTransaction({
       data: set.encodeABI(),
       gas: gas,
-      gasLimit: 3000000,
+      gasLimit: 30000000,
       value: 0,
       to: this.contractAddress,
       from: provider.account.address,
@@ -68,22 +79,22 @@ export class AbstractContract<Contract extends any> {
     return { tx: createReceipt.transactionHash };
   }
 
-  async getAll() {
-    const items = await this.contract.methods.getAll().call();
+  private async getAll() {
+    const items = await this.definedContract.methods.getAll().call();
     return items;
   }
 
-  async count() {
-    const size = await this.contract.methods.size().call();
+  private async count() {
+    const size = await this.definedContract.methods.size().call();
     return size;
   }
 
-  async getById(_id: string) {
-    return this.contract.methods.get(_id).call();
+  private async getById(_id: string) {
+    return this.definedContract.methods.get(_id).call();
   }
 
-  async deleteById(_id: string) {
-    const remove = this.contract.methods.remove(_id);
+  private async deleteById(_id: string) {
+    const remove = this.definedContract.methods.remove(_id);
 
     const gas = await remove.estimateGas();
 
@@ -91,6 +102,7 @@ export class AbstractContract<Contract extends any> {
       data: remove.encodeABI(),
       gas: gas,
       gasLimit: 3000000,
+
       value: 0,
       to: this.contractAddress,
       from: provider.account.address,
@@ -101,12 +113,12 @@ export class AbstractContract<Contract extends any> {
     return { tx: createReceipt.transactionHash };
   }
 
-  async updateById(_id: string, data: any) {
-    // TODO save to configuration
+  private async updateById(_id: string, data: any) {
+    // TODO read from ABI
     const columns = getStore()
       .parseContractsAndColumns()
       .find((contract) => contract.targetName === this.contractName).columns;
-    const set = this.contract.methods.set(_id, [
+    const set = this.definedContract.methods.set(_id, [
       _id,
       ...this.mapData(columns, data),
     ]);
@@ -115,6 +127,7 @@ export class AbstractContract<Contract extends any> {
     const createTransaction = await provider.account.signTransaction({
       data: set.encodeABI(),
       gas: gas,
+      // todo provide from options
       gasLimit: 3000000,
       value: 0,
       to: this.contractAddress,
