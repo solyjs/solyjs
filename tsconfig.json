@@ -1,16 +1,27 @@
 {
   "compilerOptions": {
-    "target": "es6",                          
-    "module": "commonjs",                    
-    "lib": ["es6"],                     
-    "allowJs": true,
-    "outDir": "build",                          
-    "strict": true,         
+    "lib": ["es6", "dom", "es2017"],
+    "outDir": "build",
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "experimentalDecorators": true,
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "importHelpers": true,
     "emitDecoratorMetadata": true,
-    "strictPropertyInitialization": false
-
-  }
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "stripInternal": true,
+    "pretty": true,
+    "strictNullChecks": true,
+    "downlevelIteration": true,
+    "declaration": true,
+  },
+  "include": [
+    "src",
+  ],
+  "exclude": [
+      "build",
+      "node_modules"
+  ]
 }

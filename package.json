@@ -1,17 +1,19 @@
 {
-  "name": "solidityorm",
-  "version": "1.0.0",
+  "name": "solyjs",
+  "version": "1.0.7",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
+  "author": "Omer Salkanovic <osalkanovic5@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "start:dev": "nodemon",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build",
+    "publish": "npm publish "
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.3",
     "@types/chalk": "^2.2.0",
@@ -40,6 +42,6 @@
     "yargs": "^17.3.0"
   },
   "bin": {
-    "solyjs": "build/bin/cli.js"
+    "solyjs": "build/cli.js"
   }
 }
