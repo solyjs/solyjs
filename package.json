@@ -1,7 +1,8 @@
 {
   "name": "solyjs",
   "version": "1.0.17",
-  "description": "",
+  "description": "SolyJS convert javascript defined struct to solidity crud.",
+  "readmeFilename": "README.md",
   "main": "build/index.js",
   "author": "Omer Salkanovic <osalkanovic5@gmail.com>",
   "license": "MIT",
