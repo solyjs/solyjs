@@ -1,6 +1,6 @@
 {
   "name": "solyjs",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "SolyJS convert javascript defined struct to solidity crud.",
   "readmeFilename": "README.md",
   "main": "build/index.js",
@@ -42,7 +42,6 @@
     "@types/glob": "^7.2.0",
     "@types/node": "^16.11.12",
     "@types/prettier": "^2.4.2",
-    "@types/uuid": "^8.3.3",
     "@types/yargs": "^17.0.7",
     "ethers": "^5.5.2",
     "nodemon": "^2.0.15",
@@ -51,14 +50,13 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "chalk": "^5.0.0",
     "dotenv": "^10.0.0",
     "glob": "^7.2.0",
+    "nanoid": "^3.1.30",
     "prettier": "^2.5.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0",
     "solc": "^0.8.10",
-    "uuid": "^8.3.2",
     "web3": "^1.6.1",
     "yargs": "^17.3.0"
   },

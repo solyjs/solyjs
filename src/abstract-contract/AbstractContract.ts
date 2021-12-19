@@ -1,7 +1,7 @@
 import { FileManager } from '../helpers/FileManager';
 import provider from '../provider/Provider';
 import { getStore } from '../store/store';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 export class AbstractContract<Contract extends any> {
   private contractName: string;
@@ -25,7 +25,9 @@ export class AbstractContract<Contract extends any> {
   }
   private mapData(colums: any[], data: any, type?: string) {
     let result: any[] = [];
-    colums.forEach((column) => {
+    const abiFunc = this.abi.find((abiEl) => abiEl.name === type);
+    const inputs = abiFunc.inputs[1].components;
+    inputs.forEach((column) => {
       result.push(data[column.name]);
     });
 
@@ -51,17 +53,15 @@ export class AbstractContract<Contract extends any> {
   }
 
   async create(data: any) {
-    const id = uuidv4();
+    const id = nanoid();
 
-    // TODO read from ABI
     const columns = getStore()
       .parseContractsAndColumns()
       .find((contract) => contract.targetName === this.contractName).columns;
 
     const account = provider.account.address;
     const transaction = this.definedContract.methods.set(id, [
-      id,
-      ...this.mapData(columns, data, 'set'),
+      ...this.mapData(columns, { ...data, _id: id }, 'set'),
     ]);
     const options = {
       to: transaction._parent._address,
@@ -115,14 +115,13 @@ export class AbstractContract<Contract extends any> {
   }
 
   async updateById(_id: string, data: any) {
-    // TODO read from ABI
     const columns = getStore()
       .parseContractsAndColumns()
       .find((contract) => contract.targetName === this.contractName).columns;
     const account = provider.account.address;
     const transaction = this.definedContract.methods.set(_id, [
       _id,
-      ...this.mapData(columns, data),
+      ...this.mapData(columns, data, 'set'),
     ]);
     const options = {
       to: transaction._parent._address,
