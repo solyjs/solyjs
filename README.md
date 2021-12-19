@@ -150,4 +150,4 @@ export class User {
 
 ## IMPORTANT
 
-This package in development phase, so a lot of new features coming soon
+This package is in development phase, so a lot of new features coming soon
