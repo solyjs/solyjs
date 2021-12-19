@@ -1,6 +1,6 @@
 {
   "name": "solyjs",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "",
   "main": "build/index.js",
   "author": "Omer Salkanovic <osalkanovic5@gmail.com>",
@@ -13,7 +13,27 @@
     "prepublishOnly": "npm run build",
     "publish": "npm publish "
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "directory": "https://github.com/solyjs/solyjs"
+  },
+  "bugs": {
+    "url": "https://github.com/solyjs/solyjs/issues"
+  },
+  "keywords": [
+    "solidity",
+    "nodejs",
+    "web3",
+    "eth",
+    "smart-contracts"
+  ],
+  "tags": [
+    "solidity",
+    "nodejs",
+    "web3",
+    "eth",
+    "smart-contracts"
+  ],
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.3",
     "@types/chalk": "^2.2.0",
