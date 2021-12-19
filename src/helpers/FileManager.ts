@@ -76,6 +76,7 @@ export class FileManager {
         path.resolve(dirPath, file),
         'utf8'
       );
+
       contracts.push({
         content: fileContnentRaw,
         name: file.replace('.sol', ''),

@@ -55,12 +55,9 @@ export class ContractHelper {
     }
 
     if (this.options?.restriction === 'editors') {
-      let editors = '';
-      this.options.editors?.forEach((editor) => (editors += `${editor}, `));
-      editors = editors.substring(0, editors.length - 2);
       this.restriction = '_editorsOnly';
       return `
-      address[] editors = [${editors}];
+      address[] editors;
       modifier _editorsOnly() {
       bool exist = false;
       for (uint i; i< editors.length;i++){
@@ -69,6 +66,10 @@ export class ContractHelper {
         }
         require(exist == true);
         _;
+      }
+
+      constructor(address[] memory _editors) payable {
+        editors = _editors;
       }
       `;
     }

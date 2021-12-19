@@ -12,6 +12,7 @@ export const deploy = async () => {
   for await (const artifact of artifacts) {
     const fileContnent = JSON.parse(artifact.content);
     let abi = fileContnent['abi'];
+    const options = fileContnent.contractOptions;
 
     let bytecode = fileContnent['evm']['bytecode']['object'];
     const account = web3.eth.accounts.privateKeyToAccount(
@@ -22,7 +23,12 @@ export const deploy = async () => {
 
     let contractA = contract.deploy({
       data: bytecode,
-      arguments: [account.address],
+      arguments:
+        options.restriction === 'owner'
+          ? [account.address]
+          : options.restriction === 'editors'
+          ? [options.editors ?? []]
+          : [],
     });
     const createTransaction = await account.signTransaction({
       data: contractA.encodeABI(),
