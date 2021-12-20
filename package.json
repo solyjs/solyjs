@@ -1,6 +1,6 @@
 {
   "name": "solyjs",
-  "version": "1.0.27",
+  "version": "1.0.30",
   "description": "SolyJS convert javascript defined struct to solidity crud.",
   "readmeFilename": "README.md",
   "main": "build/index.js",
@@ -12,7 +12,7 @@
     "start": "npm run build && node build/test/test.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build",
-    "publish": "npm publish "
+    "publish:package": "npm publish "
   },
   "homepage": "https://github.com/solyjs/solyjs#readme",
   "repository": {
