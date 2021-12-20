@@ -2,12 +2,12 @@
 
 ### Nodejs Solidity CRUD generator
 
-Move your application on new level.
+Sometimes creating CRUDS in solidity and connecting with javascript can be a hassle.
 SolyJS convert javascript defined struct to solidity crud.
 
 - Define your JS object
 - Compile and deploy with SolyJS cli
-- ✨Magic ✨
+- ✨ Magic ✨
 
 Start using SolyJS
 `solyjs init` -> This command will create directories which solyjs need for works

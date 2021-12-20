@@ -7,12 +7,7 @@ import { getStore } from '../store/store';
 export class SolyModule {
   static async load() {
     await configStore.readConfig();
-    const contracts = await glob.sync(
-      process.cwd() + configStore.config.cli.contracts
-    );
-    // for (const contract of contracts) {
-    //   require(contract);
-    // }
+
     await provider.loadContracts();
   }
 
