@@ -24,14 +24,20 @@ export class SolyModule {
   }
 
   static registerContract(contractName: string, contract: any) {
-    getStore().contracts.push({ name: contractName, target: contract });
-    Object.keys(contract).forEach((key) => {
+    getStore().contracts.push({
+      name: contractName,
+      target: contract,
+      options: contract.options,
+    });
+    Object.keys(contract.columns).forEach((key) => {
       getStore().columns.push({
         name: key,
-        type: contract[key],
+        type: contract.columns[key],
         target: contract,
         targetName: contractName,
       });
     });
+
+    return { name: contractName };
   }
 }

@@ -45,7 +45,7 @@ const User = {
   lastName: 'string',
 };
 
-SolyModule.registerContract('User', User);
+const UserContract = SolyModule.registerContract('User', User);
 ```
 
 Create config inside your root project `solyjs.config.js`
@@ -96,9 +96,9 @@ OR
 
 ```typescript
 import {SolyModule} from 'solyjs'
-import {User} from './user.contract'
+import {UserContract} from './user.contract'
 
-const userContract = SolyModule.getContract(User);
+const userContract = SolyModule.getContract(UserContract);
 await userContract.create({firstName: 'John', lastName: 'Doe'});
  ....
 ```
@@ -127,6 +127,13 @@ export class User {
   @Column()
   firstName: string;
 }
+
+const User = {
+  options: { restriction: 'owner' },
+  columns: { firstName: 'string', lastName: 'string' },
+};
+
+export const UserContract = SolyModule.registerContract('User', User);
 ```
 
 Restriction type `editors`
@@ -159,6 +166,13 @@ export class User {
   @Column()
   firstName: string;
 }
+
+const User = {
+  options: { disabledMethods: ['update'] },
+  columns: { firstName: 'string', lastName: 'string' },
+};
+
+export const UserContract = SolyModule.registerContract('User', User);
 ```
 
 List of methods: `'delete'| 'dreate' | 'create' | 'update' | 'get' | 'count' | 'getAll' `
