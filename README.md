@@ -9,6 +9,18 @@ SolyJS convert javascript defined struct to solidity crud.
 - Compile and deploy with SolyJS cli
 - ✨ Magic ✨
 
+## Installation
+
+There is no need to have phantomjs installed, it will be fetched together with review.
+
+`$ npm install -g solyjs # for cli `
+`$ npm install solyjs # for library `
+or add cli in your scripts
+
+```
+"solyjs": "node ./node_modules/solyjs/build/cli.js"
+```
+
 Start using SolyJS
 `solyjs init` -> This command will create directories which solyjs need for works
 
