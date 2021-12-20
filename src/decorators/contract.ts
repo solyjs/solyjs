@@ -1,3 +1,4 @@
+import { Methods } from '../driver/helpers/method';
 import { getStore } from '../store/store';
 
 export function Contract(options?: ContractOptions): any;
@@ -9,6 +10,7 @@ export function Contract(options?: ContractOptions) {
 }
 
 export interface ContractOptions {
-  restriction: 'owner' | 'public' | 'editors';
+  restriction?: 'owner' | 'public' | 'editors';
   editors?: string[];
+  disabledMethods?: Array<Methods>;
 }

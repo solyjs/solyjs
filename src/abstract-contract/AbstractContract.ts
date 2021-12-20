@@ -2,6 +2,8 @@ import { FileManager } from '../helpers/FileManager';
 import provider from '../provider/Provider';
 import { getStore } from '../store/store';
 import { nanoid } from 'nanoid';
+import { ContractOptions } from '../decorators/contract';
+import { Methods } from '../driver/helpers/method';
 
 export class AbstractContract<Contract extends any> {
   private contractName: string;
@@ -9,12 +11,8 @@ export class AbstractContract<Contract extends any> {
   private fileManager: FileManager;
   private abi: any[];
   private contractAddress: string;
-  public contract = {
-    getById: this.getById,
-    getAll: this.getAll,
-    deleteById: this.deleteById,
-    updateById: this.updateById,
-  };
+  private contractOptions: ContractOptions;
+
   constructor(contractName?: string) {
     this.getContract(contractName);
     this.fileManager = new FileManager();
@@ -46,6 +44,9 @@ export class AbstractContract<Contract extends any> {
     const contract = getStore().deployedContracts.find(
       (contract) => contract.name === this.contractName
     );
+    this.contractOptions = getStore().contracts.find(
+      (contract) => contract.name === this.contractName
+    ).options;
     this.definedContract = contract.contract;
 
     this.abi = contract.abi;
@@ -53,6 +54,7 @@ export class AbstractContract<Contract extends any> {
   }
 
   async create(data: any) {
+    this.checkMethod('create');
     const id = nanoid();
 
     const columns = getStore()
@@ -81,20 +83,27 @@ export class AbstractContract<Contract extends any> {
   }
 
   async getAll() {
+    this.checkMethod('getAll');
+
     const items = await this.definedContract.methods.getAll().call();
     return items;
   }
 
   async count() {
+    this.checkMethod('count');
     const size = await this.definedContract.methods.size().call();
     return size;
   }
 
   async getById(_id: string) {
+    this.checkMethod('get');
+
     return this.definedContract.methods.get(_id).call();
   }
 
   async deleteById(_id: string) {
+    this.checkMethod('delete');
+
     const account = provider.account.address;
     const transaction = this.definedContract.methods.remove(_id);
     const options = {
@@ -115,6 +124,8 @@ export class AbstractContract<Contract extends any> {
   }
 
   async updateById(_id: string, data: any) {
+    this.checkMethod('update');
+
     const columns = getStore()
       .parseContractsAndColumns()
       .find((contract) => contract.targetName === this.contractName).columns;
@@ -138,5 +149,14 @@ export class AbstractContract<Contract extends any> {
     );
 
     return receipt;
+  }
+
+  private checkMethod(methodName: Methods) {
+    if (
+      this.contractOptions?.disabledMethods &&
+      this.contractOptions?.disabledMethods?.indexOf(methodName) !== -1
+    ) {
+      throw new Error('MethodNotAllowed');
+    }
   }
 }

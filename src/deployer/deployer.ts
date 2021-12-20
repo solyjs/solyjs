@@ -24,9 +24,9 @@ export const deploy = async () => {
     let contractA = contract.deploy({
       data: bytecode,
       arguments:
-        options.restriction === 'owner'
+        options?.restriction === 'owner'
           ? [account.address]
-          : options.restriction === 'editors'
+          : options?.restriction === 'editors'
           ? [options.editors ?? []]
           : [],
     });

@@ -17,6 +17,7 @@ export class ContractHelper {
 
   generateRawContract() {
     let contract = `pragma solidity = 0.8.10;\ncontract ${this.contractName} {\n`;
+    const disabledMethods = this.options?.disabledMethods ?? [];
 
     contract += this.generateStruct();
     contract += this.generateMap();
@@ -25,17 +26,33 @@ export class ContractHelper {
 
     contract += `struct Map {\n string[] keys;\nmapping(string => ${this.structName}) values;\nmapping(string => uint256) indexOf;\nmapping(string => bool) inserted;\n}\nMap map;\n`;
     contract += `
-    function getKeyAtIndex(uint256 index) public view returns (string memory) {
+    function getKeyAtIndex(uint256 index) private view returns (string memory) {
       return map.keys[index];
   }
-  function size() public view returns (uint256) {
+  function size() ${
+    disabledMethods?.indexOf('count') === -1 ? 'public' : 'private'
+  } view returns (uint256) {
       return map.keys.length;
   }
     `;
-    contract += this.generateSaveMethod();
-    contract += this.generateFindById();
-    contract += this.generateDeleteById();
-    contract += this.generateGetAll();
+    if (
+      disabledMethods?.indexOf('create') === -1 ||
+      disabledMethods?.indexOf('update') === -1
+    ) {
+      const createDisabled = disabledMethods.indexOf('create') > -1;
+      const updateDisabled = disabledMethods.indexOf('update') > -1;
+
+      contract += this.generateSaveMethod(createDisabled, updateDisabled);
+    }
+    if (disabledMethods.indexOf('get') === -1) {
+      contract += this.generateFindById();
+    }
+    if (disabledMethods.indexOf('delete') === -1) {
+      contract += this.generateDeleteById();
+    }
+    if (disabledMethods.indexOf('getAll') === -1) {
+      contract += this.generateGetAll();
+    }
     contract += `}`;
     return contract;
   }
@@ -95,16 +112,28 @@ export class ContractHelper {
     mapping(uint => _${this.contractName}) public ${this.hasMapName}; \n`;
   }
 
-  generateSaveMethod() {
-    return `\n  function set(string memory key, ${this.structName} memory val) ${this.restriction} public {
-      if (map.inserted[key]) {
-          map.values[key] = val;
-      } else {
-          map.inserted[key] = true;
-          map.values[key] = val;
-          map.indexOf[key] = map.keys.length;
-          map.keys.push(key);
+  generateSaveMethod(createDisabled: boolean, updateDisabled: boolean) {
+    return `\n  function set(string memory key, ${
+      this.structName
+    } memory val) ${this.restriction} public {
+      ${
+        !updateDisabled
+          ? `if (map.inserted[key]) {
+        map.values[key] = val;
+    } else {`
+          : ''
       }
+      ${
+        !createDisabled
+          ? ` map.inserted[key] = true;
+      map.values[key] = val;
+      map.indexOf[key] = map.keys.length;
+      map.keys.push(key);`
+          : ''
+      }
+         
+    ${!updateDisabled ? `}` : ''}
+      
   } \n`;
   }
 

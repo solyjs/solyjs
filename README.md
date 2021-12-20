@@ -148,6 +148,21 @@ export class User {
 }
 ```
 
+### Disable Methods
+
+```typescript
+@Contract({ disabledMethods: ['delete', 'update'] })
+export class User {
+  @Column()
+  firstName: string;
+
+  @Column()
+  firstName: string;
+}
+```
+
+List of methods: `'delete'| 'dreate' | 'create' | 'update' | 'get' | 'count' | 'getAll' `
+
 ## IMPORTANT
 
 This package is in development phase, so a lot of new features coming soon
