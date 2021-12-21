@@ -92,15 +92,15 @@ export class UserContract extends AbstractContract<User> {
 
     // SolyJs will automaticaly create _id for your user
     async createUser(){
-        retun this.contract.create({firstName: 'John', lastName: 'Doe'});
+        retun this.create({firstName: 'John', lastName: 'Doe'});
     }
 
     async getUser(id){
-        retun this.contract.get(id);
+        retun this.get(id);
     }
 
     async getAllUsers(){
-        retun this.contract.getAll();
+        retun this.getAll();
     }
     ....
 }
@@ -189,7 +189,7 @@ const User = {
 export const UserContract = SolyModule.registerContract('User', User);
 ```
 
-List of methods: `'delete'| 'dreate' | 'create' | 'update' | 'get' | 'count' | 'getAll' `
+List of methods: `'delete' | 'create' | 'update' | 'get' | 'count' | 'getAll' `
 
 ## IMPORTANT
 

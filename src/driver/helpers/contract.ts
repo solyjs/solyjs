@@ -16,7 +16,7 @@ export class ContractHelper {
   }
 
   generateRawContract() {
-    let contract = `pragma solidity = 0.8.10;\ncontract ${this.contractName} {\n`;
+    let contract = `pragma solidity = 0.8.11;\ncontract ${this.contractName} {\n`;
     const disabledMethods = this.options?.disabledMethods ?? [];
 
     contract += this.generateStruct();

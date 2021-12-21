@@ -45,7 +45,6 @@ export class AbstractContract<Contract extends any> {
       (contract) => contract.name === this.contractName
     );
 
-    console.log(getStore().contracts);
     this.contractOptions = getStore().contracts.find(
       (contract) => contract.name === this.contractName
     ).options;

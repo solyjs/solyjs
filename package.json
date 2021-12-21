@@ -1,6 +1,6 @@
 {
   "name": "solyjs",
-  "version": "1.0.31",
+  "version": "1.0.33",
   "description": "SolyJS convert javascript defined struct to solidity crud.",
   "readmeFilename": "README.md",
   "main": "build/index.js",
@@ -37,13 +37,10 @@
     "smart-contracts"
   ],
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.3",
-    "@types/chalk": "^2.2.0",
     "@types/glob": "^7.2.0",
     "@types/node": "^16.11.12",
     "@types/prettier": "^2.4.2",
     "@types/yargs": "^17.0.7",
-    "ethers": "^5.5.2",
     "nodemon": "^2.0.15",
     "rimraf": "^3.0.2",
     "ts-node": "^10.4.0",
