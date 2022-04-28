@@ -1,13 +1,12 @@
-import path from 'path';
-import yargs from 'yargs';
-import glob from 'glob';
-import configStore from '../config/config';
+import yargs from "yargs";
+import glob from "glob";
+import configStore from "../config/config";
 
-import { Compiler } from '../compiler/compiler';
-import { Driver } from '../driver/driver';
+import { Compiler } from "../compiler/compiler";
+import { Driver } from "../driver/driver";
 
 export class CompilerCommand implements yargs.CommandModule {
-  command = 'contracts:compile';
+  command = "contracts:compile";
   async handler() {
     try {
       await configStore.readConfig();
@@ -23,9 +22,9 @@ export class CompilerCommand implements yargs.CommandModule {
       await driver.generateContract();
       const compiler = new Compiler();
       await compiler.compile();
-      console.log('Compiling contracts done.');
+      console.log("Compiling contracts done.");
     } catch (e) {
-      console.log('Error during contracts compiling:');
+      console.log("Error during contracts compiling:");
       console.error(e);
       process.exit(1);
     }
