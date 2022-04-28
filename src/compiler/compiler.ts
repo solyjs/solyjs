@@ -33,7 +33,7 @@ export class Compiler {
       var output = JSON.parse(solc.compile(JSON.stringify(input)));
       await fileManager.saveArtifact(contractName, {
         ...output.contracts[contractNameFile][contractName],
-        contractOptions: storeContract.options,
+        contractOptions: storeContract?.options,
       });
     }
   }

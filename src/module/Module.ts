@@ -23,7 +23,10 @@ export class SolyModule {
     getStore().contracts.push({
       name: contractName,
       target: contract,
-      options: contract.options,
+      options:
+        Object.entries(contract.options ?? {}).length === 0
+          ? undefined
+          : contract.options,
     });
     Object.keys(contract.columns).forEach((key) => {
       getStore().columns.push({
