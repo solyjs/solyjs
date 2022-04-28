@@ -29,7 +29,7 @@ Start using SolyJS
 on your app init
 
 ```typescript
-import { SolyModule } from 'solyjs';
+import { SolyModule } from "solyjs";
 
 await SolyModule.load();
 ```
@@ -37,7 +37,7 @@ await SolyModule.load();
 With SolyJs you can define your contract like `user.contract.ts`:
 
 ```typescript
-import { Contract, Column } from 'solyjs';
+import { Contract, Column } from "solyjs";
 
 @Contract()
 export class User {
@@ -45,21 +45,21 @@ export class User {
   firstName: string;
 
   @Column()
-  firstName: string;
+  lastName: string;
 }
 ```
 
 OR
 
 ```typescript
-import { SolyModule } from 'solyjs';
+import { SolyModule } from "solyjs";
 
 const User = {
-  firstName: 'string',
-  lastName: 'string',
+  firstName: "string",
+  lastName: "string",
 };
 
-const UserContract = SolyModule.registerContract('User', User);
+const UserContract = SolyModule.registerContract("User", User);
 ```
 
 Create config inside your root project `solyjs.config.js`
@@ -85,22 +85,22 @@ And run CLI
 Start using your contracts through app
 
 ```typescript
-import {CrudContract, AbstractContract} from 'solyjs'
+import {CrudContract, AbstractCrudContract} from 'solyjs'
 
 @CrudContract(User)
-export class UserContract extends AbstractContract<User> {
+export class UserContract extends AbstractCrudContract<User> {
 
     // SolyJs will automaticaly create _id for your user
     async createUser(){
-        retun this.create({firstName: 'John', lastName: 'Doe'});
+        return this.contract.create({firstName: 'John', lastName: 'Doe'});
     }
 
     async getUser(id){
-        retun this.get(id);
+        return this.contract.get(id);
     }
 
     async getAllUsers(){
-        retun this.getAll();
+        return this.contract.getAll();
     }
     ....
 }
@@ -133,31 +133,31 @@ Allowed methods:
 Restriction type `owner`
 
 ```typescript
-@Contract({ restriction: 'owner' })
+@Contract({ restriction: "owner" })
 export class User {
   @Column()
   firstName: string;
 
   @Column()
-  firstName: string;
+  lastName: string;
 }
 
 const User = {
-  options: { restriction: 'owner' },
-  columns: { firstName: 'string', lastName: 'string' },
+  options: { restriction: "owner" },
+  columns: { firstName: "string", lastName: "string" },
 };
 
-export const UserContract = SolyModule.registerContract('User', User);
+export const UserContract = SolyModule.registerContract("User", User);
 ```
 
 Restriction type `editors`
 
 ```typescript
 @Contract({
-  restriction: 'editors',
+  restriction: "editors",
   editors: [
-    '0x25a39f7E0b8b2D6b2Ebe1f155B09EE6FfB7D11F9',
-    '0xbAce2110fA28910B48a5ed08F7ad844d8f1Af6c2',
+    "0x25a39f7E0b8b2D6b2Ebe1f155B09EE6FfB7D11F9",
+    "0xbAce2110fA28910B48a5ed08F7ad844d8f1Af6c2",
   ],
 })
 export class User {
@@ -165,28 +165,28 @@ export class User {
   firstName: string;
 
   @Column()
-  firstName: string;
+  lastName: string;
 }
 ```
 
 ### Disable Methods
 
 ```typescript
-@Contract({ disabledMethods: ['delete', 'update'] })
+@Contract({ disabledMethods: ["delete", "update"] })
 export class User {
   @Column()
   firstName: string;
 
   @Column()
-  firstName: string;
+  lastName: string;
 }
 
 const User = {
-  options: { disabledMethods: ['update'] },
-  columns: { firstName: 'string', lastName: 'string' },
+  options: { disabledMethods: ["update"] },
+  columns: { firstName: "string", lastName: "string" },
 };
 
-export const UserContract = SolyModule.registerContract('User', User);
+export const UserContract = SolyModule.registerContract("User", User);
 ```
 
 List of methods: `'delete' | 'create' | 'update' | 'get' | 'count' | 'getAll' `

@@ -1,9 +1,10 @@
-import 'reflect-metadata';
-import { getStore } from '../store/store';
+import "reflect-metadata";
+import { getStore } from "../store/store";
+
 export function Column(options?: any) {
   return function (target: any, name: string) {
     const reflectMetadataType = Reflect.getMetadata(
-      'design:type',
+      "design:type",
       target,
       name
     );

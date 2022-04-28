@@ -1,8 +1,8 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from "fs";
 //@ts-ignore
-import solc from 'solc';
-import { FileManager } from '../helpers/FileManager';
-import { getStore } from '../store/store';
+import solc from "solc";
+import { FileManager } from "../helpers/FileManager";
+import { getStore } from "../store/store";
 
 export class Compiler {
   async compile() {
@@ -16,7 +16,7 @@ export class Compiler {
         (c) => c.name === contractName
       );
       const input = {
-        language: 'Solidity',
+        language: "Solidity",
         sources: {
           [contractNameFile]: {
             content: contract.content,
@@ -24,8 +24,8 @@ export class Compiler {
         },
         settings: {
           outputSelection: {
-            '*': {
-              '*': ['*'],
+            "*": {
+              "*": ["*"],
             },
           },
         },

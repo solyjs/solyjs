@@ -1,11 +1,11 @@
-import { ContractOptions } from '../../decorators/contract';
+import { ContractOptions } from "../../decorators/contract";
 
 // TODO method params if string
 export class ContractHelper {
   private hasMapName: string;
   private primaryColumn: any;
   private structName: string;
-  private restriction = '';
+  private restriction = "";
   constructor(
     private readonly contractName: string,
     private readonly columns: any[],
@@ -16,11 +16,10 @@ export class ContractHelper {
   }
 
   generateRawContract() {
-    let contract = `pragma solidity = 0.8.11;\ncontract ${this.contractName} {\n`;
+    let contract = `pragma solidity = 0.8.13;\ncontract ${this.contractName} {\n`;
     const disabledMethods = this.options?.disabledMethods ?? [];
 
     contract += this.generateStruct();
-    contract += this.generateMap();
 
     contract += this.generateRestrictions();
 
@@ -30,35 +29,35 @@ export class ContractHelper {
       return map.keys[index];
   }
   function size() ${
-    disabledMethods?.indexOf('count') === -1 ? 'public' : 'private'
+    disabledMethods?.indexOf("count") === -1 ? "public" : "private"
   } view returns (uint256) {
       return map.keys.length;
   }
     `;
     if (
-      disabledMethods?.indexOf('create') === -1 ||
-      disabledMethods?.indexOf('update') === -1
+      disabledMethods?.indexOf("create") === -1 ||
+      disabledMethods?.indexOf("update") === -1
     ) {
-      const createDisabled = disabledMethods.indexOf('create') > -1;
-      const updateDisabled = disabledMethods.indexOf('update') > -1;
+      const createDisabled = disabledMethods.indexOf("create") > -1;
+      const updateDisabled = disabledMethods.indexOf("update") > -1;
 
       contract += this.generateSaveMethod(createDisabled, updateDisabled);
     }
-    if (disabledMethods.indexOf('get') === -1) {
+    if (disabledMethods.indexOf("get") === -1) {
       contract += this.generateFindById();
     }
-    if (disabledMethods.indexOf('delete') === -1) {
+    if (disabledMethods.indexOf("delete") === -1) {
       contract += this.generateDeleteById();
     }
-    if (disabledMethods.indexOf('getAll') === -1) {
+    if (disabledMethods.indexOf("getAll") === -1) {
       contract += this.generateGetAll();
     }
     contract += `}`;
     return contract;
   }
   generateRestrictions() {
-    if (this.options?.restriction === 'owner') {
-      this.restriction = '_ownerOnly';
+    if (this.options?.restriction === "owner") {
+      this.restriction = "_ownerOnly";
       return `
       address owner;
       modifier _ownerOnly() {
@@ -71,8 +70,8 @@ export class ContractHelper {
       }`;
     }
 
-    if (this.options?.restriction === 'editors') {
-      this.restriction = '_editorsOnly';
+    if (this.options?.restriction === "editors") {
+      this.restriction = "_editorsOnly";
       return `
       address[] editors;
       modifier _editorsOnly() {
@@ -91,25 +90,19 @@ export class ContractHelper {
       `;
     }
 
-    return '';
+    return "";
   }
   generateStruct() {
     let struct = `\n struct ${this.structName} {\n string _id; \n`;
     this.columns.forEach((column) => {
       // skip _id
-      if (column.type.toLowerCase() !== '_id') {
+      if (column.type.toLowerCase() !== "_id") {
         struct += `  ${column.type.toLowerCase()} ${column.name}; \n`;
       }
     });
     struct += ` }\n`;
 
     return struct;
-  }
-
-  generateMap() {
-    return ` 
-    uint public ${this.hasMapName}length = 0;
-    mapping(uint => _${this.contractName}) public ${this.hasMapName}; \n`;
   }
 
   generateSaveMethod(createDisabled: boolean, updateDisabled: boolean) {
@@ -121,7 +114,7 @@ export class ContractHelper {
           ? `if (map.inserted[key]) {
         map.values[key] = val;
     } else {`
-          : ''
+          : ""
       }
       ${
         !createDisabled
@@ -129,10 +122,10 @@ export class ContractHelper {
       map.values[key] = val;
       map.indexOf[key] = map.keys.length;
       map.keys.push(key);`
-          : ''
+          : ""
       }
          
-    ${!updateDisabled ? `}` : ''}
+    ${!updateDisabled ? `}` : ""}
       
   } \n`;
   }

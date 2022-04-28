@@ -1,8 +1,9 @@
-import glob from 'glob';
-import { AbstractContract } from '..';
-import configStore from '../config/config';
-import provider from '../provider/Provider';
-import { getStore } from '../store/store';
+import glob from "glob";
+import { AbstractCrudContract } from "..";
+import { ObjectLiteral } from "../crud/AbstractContract";
+import configStore from "../config/config";
+import provider from "../provider/Provider";
+import { getStore } from "../store/store";
 
 export class SolyModule {
   static async load() {
@@ -11,11 +12,11 @@ export class SolyModule {
     await provider.loadContracts();
   }
 
-  static getContract(contract: any) {
-    const test = new AbstractContract(
-      typeof contract === 'string' ? contract : contract.name
+  static getContract(contract: string | ObjectLiteral) {
+    const test = new AbstractCrudContract(
+      typeof contract === "string" ? contract : contract.name
     );
-    return test;
+    return test.contract;
   }
 
   static registerContract(contractName: string, contract: any) {
